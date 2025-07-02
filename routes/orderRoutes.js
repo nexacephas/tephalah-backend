@@ -1,7 +1,7 @@
 // server/routes/orderRoutes.js
 const express = require('express');
 const router = express.Router();
-const Order = require('../models/Order');
+const Order = require('../models/order');
 const sendEmail = require('../utils/sendEmail');
 const { sendOrderReceipt } = require('../controllers/orderController');
 
