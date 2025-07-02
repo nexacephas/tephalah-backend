@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Receipt</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; }
+    h1 { color: #6a4bc3; }
+    .section { margin-bottom: 1.5rem; }
+    .item { margin-bottom: 0.5rem; }
+    .total { font-weight: bold; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>Tephilah Order Receipt</h1>
+
+  <div class="section">
+    <p><strong>Customer:</strong> <%= name %></p>
+    <p><strong>Email:</strong> <%= email %></p>
+    <% if (address) { %><p><strong>Address:</strong> <%= address %></p><% } %>
+    <% if (shippingMethod) { %><p><strong>Shipping:</strong> <%= shippingMethod %></p><% } %>
+    <% if (orderId) { %><p><strong>Order ID:</strong> <%= orderId %></p><% } %>
+    <% if (deliveryStatus) { %><p><strong>Status:</strong> <%= deliveryStatus %></p><% } %>
+  </div>
+
+  <div class="section">
+    <h3>Items:</h3>
+    <% items.forEach(item => { %>
+      <div class="item"><%= item.title %> x <%= item.quantity %></div>
+    <% }) %>
+  </div>
+
+  <div class="section total">
+    Total Paid: ₦<%= total.toLocaleString() %>
+  </div>
+</body>
+</html>
