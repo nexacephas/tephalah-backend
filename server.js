@@ -4,34 +4,48 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-// Route imports
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const authRoutes = require('./routes/authRoutes'); // 🔐 Include this if you’re using auth
+const authRoutes = require('./routes/authRoutes'); // 🔐 Auth routes
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// ✅ CORS: Allow local and live frontend origins
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173', // Dev environment
+      'https://teqilah-brand-6p53sjeh7-cephas-projects-87e03470.vercel.app', // Live Vercel frontend
+    ],
+    credentials: true, // Allows sending cookies/tokens between origins
+  })
+);
+
 app.use(express.json()); // Parse JSON request bodies
 
-mongoose.set('debug', true); // Log Mongoose queries (can be turned off in production)
+// ✅ Static file access (uploads, if used)
+app.use('/uploads', express.static('uploads'));
 
-// Routes
+// ✅ Route setup
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/auth', authRoutes); // 👈 Ensure auth routes are registered
+app.use('/api/auth', authRoutes);
+
+// ✅ Debugging (Email + Mongo)
 console.log('✅ EMAIL_USER:', process.env.EMAIL_USER);
 console.log('✅ EMAIL_PASS:', process.env.EMAIL_PASS ? 'Loaded' : 'Missing');
-app.use('/uploads', express.static('uploads'));
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log('✅ MongoDB Connected');
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-})
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+
+// ✅ Mongoose config
+mongoose.set('strictQuery', false);
+mongoose.set('debug', true); // Optional: disable in production
+
+mongoose
+  .connect(process.env.MONGO_URI, {
+    dbName: 'nexacluster', // Or your DB name
+  })
+  .then(() => {
+    console.log('✅ MongoDB Connected');
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+  })
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
